@@ -4,13 +4,15 @@
 
 + Explain why `DOMContentLoaded` is important
 
-## Introduction
+## A problem of timing
 
 When working with JavaScript code, we must be careful about timing.  Things happen in a specific order that can trip us up.  Open up the `index.html` file in a browser.  Then open up your console.  You will see a `null` in the console.  Where did that come from?  Is that supposed to be there?
 
 Well, if you open up the `index.html` file in the text editor, we can find out.  So in the `head` tag, you can see that we are linking to some JavaScript code located in the `index.js` file.  Let's open that `index.js` file to find some code that should select our `h1` and then log that element to the console.  Our debugger only is hit if the console is open.  So refresh the page with the console open.  
 
 With the code paused on the debugger, if you type in `ada` in the console, you can see that `ada` is `null`.  Do you see why?  There isn't a typo.  Instead, the reason why we cannot select an `h1` is because there is no `h1` on the page.  In fact you are looking at your HTML at the debugger is hit and as you can see there are no elements on the page.  The reason why is because our code is simply following our directions.  We tell our HTML to load our `index.js` file in the `head` tag before any of our HTML is loaded.
+
+## A quick fix
 
 If we want to quickly fix this, we can simply move that `<script src="index.js"/>` line down below our `body` tag.  If you do so, and refresh the page, you can see that `ada` now properly points to the `h1` element.  So the timing really matters.  If we try to select elements before they are on the page, we cannot then attach event listeners or any other behavior to them.  
 
