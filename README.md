@@ -1,53 +1,41 @@
-# Document Ready
+# DOMContentLoaded event
 
 ## Objectives
-+ Set up a call to `document.ready()`
-+ Explain why `document.ready` is important
+
++ Explain why `DOMContentLoaded` is important
 
 ## Introduction
 
-We don't ever want to write our JavaScript and jQuery inside our HTML files. For the same reasons that we want to separate out our CSS from our HTML, we want to separate out our JavaScript from our HTML, too.
+When working with JavaScript code, we must be careful about timing.  Things happen in a specific order that can trip us up.  Open up the `index.html` file in a browser.  Then open up your console.  You will see a `null` in the console.  Where did that come from?  Is that supposed to be there?
 
-But so far we've written our JavaScript code at the bottom of our HTML `<body>` so that the code would run once the page loads. How can we run our code when it's in a totally different file? We need to guarantee that the HTML document is loaded before our other files are triggered.
+Well, if you open up the `index.html` file in the text editor, we can find out.  So in the `head` tag, you can see that we are linking to some JavaScript code located in the `index.js` file.  Let's open that `index.js` file to find some code that should select our `h1` and then log that element to the console.  Our debugger only is hit if the console is open.  So refresh the page with the console open.  
 
+With the code paused on the debugger, if you type in `ada` in the console, you can see that `ada` is `null`.  Do you see why?  There isn't a typo.  Instead, the reason why we cannot select an `h1` is because there is no `h1` on the page.  In fact you are looking at your HTML at the debugger is hit and as you can see there are no elements on the page.  The reason why is because our code is simply following our directions.  We tell our HTML to load our `index.js` file in the `head` tag before any of our HTML is loaded.
 
-## Separating and Linking Code
+If we want to quickly fix this, we can simply move that `<script src="index.js"/>` line down below our `body` tag.  If you do so, and refresh the page, you can see that `ada` now properly points to the `h1` element.  So the timing really matters.  If we try to select elements before they are on the page, we cannot then attach event listeners or any other behavior to them.  
 
-This lesson doesn't render as a lab, but there are files within this repository you'll need to code along. Click on the Github icon in Learn, and fork and clone this repository.
+We really don't want to be dependent on linking to our JavaScript code at precisely the correct spot on the page.  What if more than one HTML file is using our JavaScript code.  It's easy to forget about this dependency.  Instead, we want to tell our JavaScript code to wait until everything is loaded up, before running the code that will select elements and attach behavior.  Well lucky for us, we can do this with use of a JavaScript event.
 
-If you take a look at `index.html`, you'll notice we have jQuery-flavored JavaScript code written at the bottom. Our goal is to refactor this site to move that code out into `script.js`
+## DOMContentLoaded
 
-The first thing we need to do is load `script.js` in `index.html`. In the olden days (the 1990s and 2000s), we used to import our scripts in the `<head>` of our HTML documents. As our applications grew more interactive, our JavaScript files grew larger and our pages took longer to load. This was because the browser loads _everything_ in between the `<head>` tags before it attempts to render the page. Once the browser gets to `<body>`, it starts to load things in order (synchronously).
-
-When that's just painting tags with the appropriate styles, the browser simply hums along; but when it encounters a `<script>` tag, it either needs to evaluate the script or else make a request to the location specified in the `<script>` tag's `src` attribute. These requests take time, so nowadays, we put all of our `<script>` tags at the bottom of `<body>`, below all of the static HTML content. Go ahead and add a `<script>` tag for "script.js" at the bottom of `<body>`:
-
-```html
-<script src="script.js"></script>
-```
-Now that our HTML file can find our JavaScript File, let's remove the code between the `script` tags from the bottom of our HTML file and move it to `script.js`.
-
-In this simple example, you should already see `"this is so freaking cool."` appended to `div#text`. But normally, it's not safe to execute JavaScript code until the browser tells us it's ready.
-
-## Document Ready
-
-Thankfully, the browser has a built-in way to determine when a page is loaded. You'll be coding along in `index.html` and `script.js`.
-
-In `script.js`, we need to set up a document ready in order to detect when our HTML page has loaded, and the document is ready to be manipulated:
+Instead of immediately executing our selectors and event listeners when a file is loaded, we can have this code wait until our page is loaded.  How do we do this?  Well the page being loaded is an event, and we can say to only run the code to select elements and add behavior after the all of the elements are on the page.  Let's move our `index.js` file back up to the top to our fix properly works. Here is what our new code should look like:
 
 ```js
-$(document).ready(function() {
-  // code to be executed goes here
+document.addEventListener("DOMContentLoaded", function(event) {
+  let ada = document.querySelector('h1')
+  console.log(ada)
 });
-```
+```   
 
-The `$` is a shortcut for `jQuery`, and provides an interface to the library. Every time you see `$`, think `jQuery`.
+Ok, so as you can see, we are no longer directly selecting elements when the `index.js` file is run.  Instead, running the `index.js` file calls the `addEventListener` method on `document` and only when the HTML content is loaded does it look for an `h1` and then log the element.  That is why our code now works.  It is not unusual to wrap all of JavaScript code related to the DOM in a `document.addEventListener('DOMContentLoaded')` call.
 
-Once the `load` event fires (which we've told jQuery to listen for with `$(document).ready()`), the rest of the code will fire. Place the document ready around the jQuery already in `script.js`. Save your changes, and refresh in the browser. You should see the text appear in the browser!
+### Summary
+
+In this lesson, we saw that we can run into problems by invoking our JavaScript code immediately.  This is because our code may be attempting to take actions like selecting elements or adding event listeners before the elements have been added to the browser.  By making use of the `DOMContentLoaded` event we can wait until the content is loaded before running our DOM dependent JavaScript code.  
 
 ## Resources
 
-+ [Learn jQuery](http://learn.jquery.com/using-jquery-core/document-ready/)
-+ [jQuery Docs](https://api.jquery.com/ready/)
++ [DOMContentLoaded](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded)
 
 
-<p class='util--hide'>View <a href='https://learn.co/lessons/js-jquery-document-ready-readme'>Document Ready</a> on Learn.co and start learning to code for free.</p>
+<p class='util--hide'>View <a href='https://learn.co/lessons/js-DOMContentLoaded'DOMContentLoaded</a> on Learn.co and start learning to code for free.</p>
