@@ -1,7 +1,8 @@
 tags:
-  - document ready
-  - jquery
+  - event delegation
+  - event
+  - JavaScript
 languages:
   - JavaScript
-resources: 
+resources:
   - 2
